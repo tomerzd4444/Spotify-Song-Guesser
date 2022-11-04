@@ -4,6 +4,7 @@ from tkinter import *
 import random
 import os
 
+# get current directory
 folder = os.getcwd()
 
 # only if songs not download already
@@ -16,30 +17,33 @@ folder = os.getcwd()
 #         os.unlink(file_path)
 #         continue
 #     if 'System Of A Down - ' in file_path:
-#         os.rename(file_path, file_path[len(folder) + 19:])
+#         os.rename(file_path, file_path[len(folder) + 20:])
 #         continue
+# remember to remove the system of a down from the shame song (this hack doesn't work on it)
 
+# create root and initialize mixer
 root = Tk()
 root.title('Spotify guessing songs')
 root.geometry("700x800")
 mixer.init()
 
+# sets the volume (not sure if it really works)
 mixer.music.set_volume(0.05)
 buttons = []
 
 
 def create_guess():
-    files = list(os.listdir(folder))
+    files = list(os.listdir(folder))  # get all files in directory
     for file in files:
-        if '.mp3' not in file:
+        if '.mp3' not in file:  # if file is not mp3 then discard it
             files.remove(file)
-    d = {files.pop(files.index(random.choice(files))): 1}
+    d = {files.pop(files.index(random.choice(files))): 1}  # choose the correct song while removing it from the list
     for _ in range(3):
-        d[files.pop(files.index(random.choice(files)))] = 0
+        d[files.pop(files.index(random.choice(files)))] = 0  # choose 3 incorrect songs
     return d
 
 
-def play(song):
+def play(song):  # play the song for 5 seconds
     mixer.music.load(song)
     mixer.music.play()
     time.sleep(5)
@@ -55,7 +59,7 @@ def check(guess, correct):
         print('Wrong!')
         label_wrong.text = f"Wrong! the correct answer was {correct}"
         label_wrong.pack(pady=20)
-    root.update()
+    root.update()  # update the root (show correct/incorrect label)
     for i in buttons:
         i.pack_forget()
     time.sleep(1)
@@ -84,8 +88,6 @@ title = Label(root, text="Guess The Song!", bd=9, relief=GROOVE,
 title.pack(side=TOP, fill=X)
 
 # making a button which trigger the function so sound can be playeed
-# play_button = Button(root, text="Play Song", font=("Helvetica", 32),
-#                      relief=GROOVE, command=play)
 play_button = Button(root, text="Start Game", font=("Helvetica", 32),
                      relief=GROOVE, command=start)
 play_button.pack(pady=20)

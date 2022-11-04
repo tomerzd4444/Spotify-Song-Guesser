@@ -22,9 +22,10 @@ folder = os.getcwd()
 # remember to remove the system of a down from the shame song (this hack doesn't work on it)
 
 # create root and initialize mixer
+SECONDS = 5
 root = Tk()
 root.title('Spotify guessing songs')
-root.geometry("700x800")
+root.geometry("1000x800")
 mixer.init()
 
 # sets the volume (not sure if it really works)
@@ -46,18 +47,25 @@ def create_guess():
 def play(song):  # play the song for 5 seconds
     mixer.music.load(song)
     mixer.music.play()
-    time.sleep(5)
+    time.sleep(SECONDS)
+    mixer.music.pause()
+
+
+def replay():
+    mixer.music.rewind()
+    mixer.music.play()
+    time.sleep(SECONDS)
     mixer.music.pause()
 
 
 def check(guess, correct):
-    global buttons
+    global label_wrong
     if guess == correct:
         print('Right!')
         label_right.pack(pady=20)
     else:
         print('Wrong!')
-        label_wrong.text = f"Wrong! the correct answer was {correct}"
+        label_wrong.config(text=f"Wrong! the correct answer was {correct[:-4]}")
         label_wrong.pack(pady=20)
     root.update()  # update the root (show correct/incorrect label)
     for i in buttons:
@@ -71,6 +79,7 @@ def start():
     keys = list(s.keys())
     correct = keys[0]
     random.shuffle(keys)
+    replay_button.pack(pady=20)
     for key in keys:
         buttons.append(Button(root, text=key[:-4], font=("Helvetica", 32),
                               relief=GROOVE, command=lambda j=key: check(j, correct)))
@@ -91,6 +100,10 @@ title.pack(side=TOP, fill=X)
 play_button = Button(root, text="Start Game", font=("Helvetica", 32),
                      relief=GROOVE, command=start)
 play_button.pack(pady=20)
+
+replay_button = Button(root, text="Replay Song", font=("Helvetica", 20),
+                     relief=GROOVE, command=replay)
+
 
 label_right = Label(root, text="Correct!",
                     font=("times new roman", 32, "bold"))

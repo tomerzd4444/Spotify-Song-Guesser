@@ -1,4 +1,5 @@
 import time
+import threading
 from pygame import mixer
 from tkinter import *
 import random
@@ -51,6 +52,11 @@ def play(song):  # play the song for 5 seconds
     mixer.music.pause()
 
 
+def threaded_replay():
+    t = threading.Thread(target=replay)
+    t.start()
+
+
 def replay():
     mixer.music.rewind()
     mixer.music.play()
@@ -59,6 +65,7 @@ def replay():
 
 
 def check(guess, correct):
+    #mixer.music.pause()
     global label_wrong
     if guess == correct:
         print('Right!')
@@ -88,7 +95,8 @@ def start():
     label_right.pack_forget()
     label_wrong.pack_forget()
     root.update()
-    play(correct)
+    t = threading.Thread(target=play, args=[correct])
+    t.start()
 
 
 # title on the screen you can modify it
@@ -102,7 +110,7 @@ play_button = Button(root, text="Start Game", font=("Helvetica", 32),
 play_button.pack(pady=20)
 
 replay_button = Button(root, text="Replay Song", font=("Helvetica", 20),
-                     relief=GROOVE, command=replay)
+                     relief=GROOVE, command=threaded_replay)
 
 
 label_right = Label(root, text="Correct!",
